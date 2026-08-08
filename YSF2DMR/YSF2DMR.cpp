@@ -106,6 +106,7 @@ int main(int argc, char** argv)
 
 CYSF2DMR::CYSF2DMR(const std::string& configFile) :
 m_callsign(),
+m_nodeCallsign(),
 m_suffix(),
 m_conf(configFile),
 m_wiresX(NULL),
@@ -251,7 +252,11 @@ int CYSF2DMR::run()
 	LogInfo(HEADER4);
 
 	m_callsign = m_conf.getCallsign();
+	m_nodeCallsign = m_conf.getNodeCallsign();
 	m_suffix   = m_conf.getSuffix();
+
+	// Use NodeCallsign for YSF network polls if set, otherwise fall back to Callsign
+	std::string ysfCallsign = m_nodeCallsign.empty() ? m_callsign : m_nodeCallsign;
 
 	m_remoteGateway = m_conf.getRemoteGateway();
 	m_hangTime = m_conf.getHangTime();
@@ -266,10 +271,13 @@ int CYSF2DMR::run()
 	m_xlxReflectors = new CReflectors(fileName, 60U);
 	m_xlxReflectors->load();
 
-	m_ysfNetwork = new CYSFNetwork(localAddress, localPort, m_callsign, debug);
+	m_ysfNetwork = new CYSFNetwork(localAddress, localPort, ysfCallsign, debug);
 	m_ysfNetwork->setDestination(dstAddress, dstPort);
 
 	LogInfo("General Parameters");
+	LogInfo("    YSF Callsign: %s", ysfCallsign.c_str());
+	if (!m_nodeCallsign.empty())
+		LogInfo("    Node Callsign: %s (used for YSF polls)", m_nodeCallsign.c_str());
 	LogInfo("    Remote Gateway: %s", m_remoteGateway ? "yes" : "no");
 	LogInfo("    Hang Time: %u ms", m_hangTime);
 

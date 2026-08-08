@@ -67,6 +67,7 @@ public:
 
 private:
 	std::string      m_callsign;
+	std::string      m_nodeCallsign;
 	std::string      m_suffix;
 	CConf            m_conf;
 	CWiresX*         m_wiresX;
