@@ -41,6 +41,7 @@ enum SECTION {
 CConf::CConf(const std::string& file) :
 m_file(file),
 m_callsign(),
+m_nodeCallsign(),
 m_suffix(),
 m_dstAddress(),
 m_dstPort(0U),
@@ -165,6 +166,11 @@ bool CConf::read()
 			for (unsigned int i = 0U; value[i] != 0; i++)
 				value[i] = ::toupper(value[i]);
 			m_callsign = value;
+		} else if (::strcmp(key, "NodeCallsign") == 0) {
+			// Convert the callsign to upper case
+			for (unsigned int i = 0U; value[i] != 0; i++)
+				value[i] = ::toupper(value[i]);
+			m_nodeCallsign = value;
 		} else if (::strcmp(key, "Suffix") == 0) {
 			// Convert the callsign to upper case
 			for (unsigned int i = 0U; value[i] != 0; i++)
@@ -319,6 +325,11 @@ bool CConf::read()
 std::string CConf::getCallsign() const
 {
   return m_callsign;
+}
+
+std::string CConf::getNodeCallsign() const
+{
+  return m_nodeCallsign;
 }
 
 std::string CConf::getSuffix() const
