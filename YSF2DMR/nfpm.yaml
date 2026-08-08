@@ -1,0 +1,49 @@
+name: ysf2dmr
+arch: "${ARCH}"
+platform: linux
+version: "${VERSION}"
+maintainer: "openRig Project <openrig@outcastlabs.com>"
+description: "YSF2DMR — YSF to DMR cross-mode gateway (openRig fork)"
+vendor: "openRig Project"
+homepage: "https://github.com/openRigProject/MMDVM_CM"
+license: "GPL-2.0"
+
+contents:
+  - src: build/YSF2DMR
+    dst: /usr/local/bin/YSF2DMR
+    file_info:
+      mode: 0755
+
+  - src: service/ysf2dmr.service
+    dst: /lib/systemd/system/ysf2dmr.service
+    file_info:
+      mode: 0644
+
+  - src: YSF2DMR.ini
+    dst: /etc/ysf2dmr/YSF2DMR.ini
+    type: config|noreplace
+    file_info:
+      mode: 0644
+
+  - src: TGList-DMR.txt
+    dst: /etc/ysf2dmr/TGList-DMR.txt
+    type: config|noreplace
+    file_info:
+      mode: 0644
+
+  - src: dist/update-dmrids.sh
+    dst: /usr/local/bin/update-dmrids.sh
+    file_info:
+      mode: 0755
+
+scripts:
+  postinstall: dist/postinstall.sh
+  postremove: dist/postremove.sh
+
+overrides:
+  deb:
+    depends:
+      - systemd
+      - libstdc++6
+      - curl
+      - cron
